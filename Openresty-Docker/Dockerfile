@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -yq --no-install-recommends \
-    ca-certificates wget gnupg2 curl \
+    ca-certificates wget gnupg2 curl php-fpm \
     libpcre3 libpcre3-dev libpcre2-dev git \
     g++ apt-utils autoconf automake build-essential \
     libcurl4-openssl-dev libgeoip-dev liblmdb-dev \
@@ -57,9 +57,10 @@ RUN mkdir -p /usr/local/openresty/nginx/conf/modsecurity && \
 
 COPY modsecurity.conf /usr/local/openresty/nginx/conf/modsecurity/modsecurity.conf
 COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+RUN echo 'Hello World!' > /usr/local/openresty/nginx/html/index.html
 
 RUN /usr/local/openresty/nginx/sbin/nginx -t -c /usr/local/openresty/nginx/conf/nginx.conf &
 
 EXPOSE 80
 
-CMD ["/bin/bash", "-c", "/usr/local/openresty/nginx/sbin/nginx -c /usr/local/openresty/nginx/conf/nginx.conf"]
+CMD ["/bin/bash", "-c", "/usr/local/openresty/nginx/sbin/nginx -c /usr/local/openresty/nginx/conf/nginx.conf -g 'daemon off;'"]
